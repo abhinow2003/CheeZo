@@ -3,17 +3,17 @@ package com.ust.pos.bean;
 import java.sql.Date;
 
 public class CartBean {
-    private int cartID;
+    private String cartID;
     private String userID;
     private String foodID;
     private String type;
     private int quantity;
     private double cost;
     private Date orderDate;
-    public int getCartID() {
+    public String getCartID() {
         return cartID;
     }
-    public void setCartID(int cartID) {
+    public void setCartID(String cartID) {
         this.cartID = cartID;
     }
     public String getUserID() {
