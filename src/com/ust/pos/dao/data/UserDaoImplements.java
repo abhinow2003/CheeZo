@@ -1,54 +1,65 @@
 package com.ust.pos.dao.data;
 
-
 import com.ust.pos.dao.domain.UserDao;
 import com.ust.pos.bean.ProfileBean;
 import com.ust.pos.bean.CredentialBean;
 import com.ust.pos.util.InMemoryDataStore;
 import com.ust.pos.util.IdGenerator;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoImplements implements UserDao {
 
     @Override
     public String register(ProfileBean profile, CredentialBean creds) {
-        if (profile == null || creds == null || profile.getFirstName() == null) return "FAIL";
         String userId = IdGenerator.nextUserId(profile.getFirstName());
         profile.setUserID(userId);
         creds.setUserID(userId);
-        InMemoryDataStore.PROFILE_MAP.put(userId, profile);
-        InMemoryDataStore.CREDENTIALS_MAP.put(userId, creds);
+        InMemoryDataStore.PROFILE_LIST.add(profile);
+        InMemoryDataStore.CREDENTIALS_LIST.add(creds);
         return userId;
     }
 
     @Override
     public ProfileBean findProfileById(String userId) {
-        return InMemoryDataStore.PROFILE_MAP.get(userId);
+        for (ProfileBean p : InMemoryDataStore.PROFILE_LIST) {
+            if (p.getUserID().equals(userId)) return p;
+        }
+        return null;
     }
 
     @Override
     public CredentialBean findCredentialsById(String userId) {
-        return InMemoryDataStore.CREDENTIALS_MAP.get(userId);
+        for (CredentialBean c : InMemoryDataStore.CREDENTIALS_LIST) {
+            if (c.getUserID().equals(userId)) return c;
+        }
+        return null;
     }
 
     @Override
     public boolean updateProfile(ProfileBean profile) {
-        if (profile == null || profile.getUserID() == null) return false;
-        InMemoryDataStore.PROFILE_MAP.put(profile.getUserID(), profile);
-        return true;
+        for (int i = 0; i < InMemoryDataStore.PROFILE_LIST.size(); i++) {
+            if (InMemoryDataStore.PROFILE_LIST.get(i).getUserID().equals(profile.getUserID())) {
+                InMemoryDataStore.PROFILE_LIST.set(i, profile);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean updateCredentials(CredentialBean creds) {
-        if (creds == null || creds.getUserID() == null) return false;
-        InMemoryDataStore.CREDENTIALS_MAP.put(creds.getUserID(), creds);
-        return true;
+        for (int i = 0; i < InMemoryDataStore.CREDENTIALS_LIST.size(); i++) {
+            if (InMemoryDataStore.CREDENTIALS_LIST.get(i).getUserID().equals(creds.getUserID())) {
+                InMemoryDataStore.CREDENTIALS_LIST.set(i, creds);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public List<ProfileBean> findAllProfiles() {
-        return new ArrayList<>(InMemoryDataStore.PROFILE_MAP.values());
+        return new ArrayList<>(InMemoryDataStore.PROFILE_LIST);
     }
 }
-

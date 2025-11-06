@@ -19,6 +19,9 @@ public class StoreBean {
         this.state = state;
         this.pincode = pincode;
     }
+    public StoreBean() {
+        //TODO Auto-generated constructor stub
+    }
     public String getStoreID() {
         return storeID;
     }

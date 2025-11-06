@@ -1,12 +1,10 @@
 package com.ust.pos.dao.data;
-
 import com.ust.pos.dao.domain.FoodDao;
 import com.ust.pos.bean.FoodBean;
 import com.ust.pos.util.InMemoryDataStore;
 import com.ust.pos.util.IdGenerator;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class FoodDaoImplements implements FoodDao {
 
@@ -14,38 +12,46 @@ public class FoodDaoImplements implements FoodDao {
     public String create(FoodBean food) {
         String id = IdGenerator.nextFoodId(food.getName());
         food.setFoodID(id);
-        InMemoryDataStore.FOOD_MAP.put(id, food);
+        InMemoryDataStore.FOOD_LIST.add(food);
         return id;
     }
 
     @Override
-    public boolean update(FoodBean food) {
-        if (food == null || food.getFoodID() == null) return false;
-        InMemoryDataStore.FOOD_MAP.put(food.getFoodID(), food);
-        return true;
+    public boolean update(FoodBean updated) {
+        for (int i = 0; i < InMemoryDataStore.FOOD_LIST.size(); i++) {
+            FoodBean f = InMemoryDataStore.FOOD_LIST.get(i);
+            if (f.getFoodID().equals(updated.getFoodID())) {
+                InMemoryDataStore.FOOD_LIST.set(i, updated);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean delete(String foodId) {
-        return InMemoryDataStore.FOOD_MAP.remove(foodId) != null;
+        return InMemoryDataStore.FOOD_LIST.removeIf(f -> f.getFoodID().equals(foodId));
     }
 
     @Override
     public FoodBean findById(String foodId) {
-        return InMemoryDataStore.FOOD_MAP.get(foodId);
+        for (FoodBean f : InMemoryDataStore.FOOD_LIST) {
+            if (f.getFoodID().equals(foodId)) return f;
+        }
+        return null;
     }
 
     @Override
     public List<FoodBean> findAll() {
-        return new ArrayList<>(InMemoryDataStore.FOOD_MAP.values());
+        return new ArrayList<>(InMemoryDataStore.FOOD_LIST);
     }
 
     @Override
     public List<FoodBean> findByType(String type) {
-        if (type == null) return findAll();
-        return InMemoryDataStore.FOOD_MAP.values().stream()
-                .filter(f -> type.equalsIgnoreCase(f.getType()))
-                .collect(Collectors.toList());
+        List<FoodBean> result = new ArrayList<>();
+        for (FoodBean f : InMemoryDataStore.FOOD_LIST) {
+            if (type.equalsIgnoreCase(f.getType())) result.add(f);
+        }
+        return result;
     }
 }
-

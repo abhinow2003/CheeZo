@@ -4,44 +4,52 @@ import com.ust.pos.dao.domain.CartDao;
 import com.ust.pos.bean.CartBean;
 import com.ust.pos.util.InMemoryDataStore;
 import com.ust.pos.util.IdGenerator;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map.Entry;
+import java.util.List;
 
 public class CartDaoImplements implements CartDao {
 
     @Override
     public String add(CartBean cart) {
-        String id = IdGenerator.nextCartId();
-        cart.setCartID(id);
-        InMemoryDataStore.CART_MAP.put(id, cart);
-        return id;
+        String newId = IdGenerator.nextCartId();  
+        cart.setCartID(newId);
+        InMemoryDataStore.CART_LIST.add(cart);
+        return newId;
     }
 
     @Override
-    public boolean update(CartBean cart) {
-        if (cart == null) return false;
-        InMemoryDataStore.CART_MAP.put(cart.getCartID(), cart);
-        return true;
+    public boolean update(CartBean updated) {
+        for (int i = 0; i < InMemoryDataStore.CART_LIST.size(); i++) {
+            CartBean existing = InMemoryDataStore.CART_LIST.get(i);
+            if (existing.getCartID().equals(updated.getCartID())) {
+                InMemoryDataStore.CART_LIST.set(i, updated);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean remove(String cartId) {
-        return InMemoryDataStore.CART_MAP.remove(cartId) != null;
+        return InMemoryDataStore.CART_LIST.removeIf(c -> c.getCartID().equals(cartId));
     }
 
     @Override
     public CartBean findById(String cartId) {
-        return InMemoryDataStore.CART_MAP.get(cartId);
+        for (CartBean c : InMemoryDataStore.CART_LIST) {
+            if (c.getCartID().equals(cartId)) return c;
+        }
+        return null;
     }
 
     @Override
     public List<CartBean> findByUser(String userId) {
-        List<CartBean> out = new ArrayList<>();
-        for (Entry<String, CartBean> e : InMemoryDataStore.CART_MAP.entrySet()) {
-            if (userId.equals(e.getValue().getUserID())) out.add(e.getValue());
+        List<CartBean> result = new ArrayList<>();
+        for (CartBean c : InMemoryDataStore.CART_LIST) {
+            if (c.getUserID() != null && c.getUserID().equals(userId)) {
+                result.add(c);
+            }
         }
-        return out;
+        return result;
     }
 }
-

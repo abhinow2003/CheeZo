@@ -4,9 +4,8 @@ import com.ust.pos.dao.domain.StoreDao;
 import com.ust.pos.bean.StoreBean;
 import com.ust.pos.util.InMemoryDataStore;
 import com.ust.pos.util.IdGenerator;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class StoreDaoImplements implements StoreDao {
 
@@ -14,38 +13,46 @@ public class StoreDaoImplements implements StoreDao {
     public String create(StoreBean store) {
         String id = IdGenerator.nextStoreId(store.getName());
         store.setStoreID(id);
-        InMemoryDataStore.STORE_MAP.put(id, store);
+        InMemoryDataStore.STORE_LIST.add(store);
         return id;
     }
 
     @Override
-    public boolean update(StoreBean store) {
-        if (store == null || store.getStoreID() == null) return false;
-        InMemoryDataStore.STORE_MAP.put(store.getStoreID(), store);
-        return true;
+    public boolean update(StoreBean updated) {
+        for (int i = 0; i < InMemoryDataStore.STORE_LIST.size(); i++) {
+            StoreBean s = InMemoryDataStore.STORE_LIST.get(i);
+            if (s.getStoreID().equals(updated.getStoreID())) {
+                InMemoryDataStore.STORE_LIST.set(i, updated);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean delete(String storeId) {
-        return InMemoryDataStore.STORE_MAP.remove(storeId) != null;
+        return InMemoryDataStore.STORE_LIST.removeIf(s -> s.getStoreID().equals(storeId));
     }
 
     @Override
     public StoreBean findById(String storeId) {
-        return InMemoryDataStore.STORE_MAP.get(storeId);
+        for (StoreBean s : InMemoryDataStore.STORE_LIST) {
+            if (s.getStoreID().equals(storeId)) return s;
+        }
+        return null;
     }
 
     @Override
     public List<StoreBean> findAll() {
-        return new ArrayList<>(InMemoryDataStore.STORE_MAP.values());
+        return new ArrayList<>(InMemoryDataStore.STORE_LIST);
     }
 
     @Override
     public List<StoreBean> findByCity(String city) {
-        if (city == null) return findAll();
-        return InMemoryDataStore.STORE_MAP.values().stream()
-                .filter(s -> city.equalsIgnoreCase(s.getCity()))
-                .collect(Collectors.toList());
+        List<StoreBean> result = new ArrayList<>();
+        for (StoreBean s : InMemoryDataStore.STORE_LIST) {
+            if (s.getCity().equalsIgnoreCase(city)) result.add(s);
+        }
+        return result;
     }
 }
-

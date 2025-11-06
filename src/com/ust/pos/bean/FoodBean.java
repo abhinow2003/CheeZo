@@ -7,6 +7,21 @@ public class FoodBean {
     private String foodSize;
     private int quantity;
     private double price;
+    private String storeID; // ✅ reference to Store
+
+    public FoodBean() {}
+
+    public FoodBean(String foodID, String name, String type, String foodSize,
+                    int quantity, double price, String storeID) {
+        this.foodID = foodID;
+        this.name = name;
+        this.type = type;
+        this.foodSize = foodSize;
+        this.quantity = quantity;
+        this.price = price;
+        this.storeID = storeID;
+    }
+
     public String getFoodID() {
         return foodID;
     }
@@ -43,5 +58,15 @@ public class FoodBean {
     public void setPrice(double price) {
         this.price = price;
     }
+    public String getStoreID() {
+        return storeID;
+    }
+    public void setStoreID(String storeID) {
+        this.storeID = storeID;
+    }
 
+    @Override
+    public String toString() {
+        return foodID + " - " + name + " (" + type + ", " + foodSize + ") ₹" + price + " [Store: " + storeID + "]";
+    }
 }
