@@ -76,57 +76,125 @@ public class App {
     }
 
     // --- Admin UI ---
-    private static void showAdminUI(ProfileBean admin) {
-        JFrame frame = new JFrame("Admin Panel - " + admin.getFirstName());
-        frame.setSize(400, 400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+    // --- Admin UI ---
+private static void showAdminUI(ProfileBean admin) {
+    JFrame frame = new JFrame("Admin Panel - " + admin.getFirstName());
+    frame.setSize(500, 400);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
-        JButton btnViewProfiles = new JButton("View All Users");
-        JButton btnViewStores = new JButton("View All Stores");
-        JButton btnViewFoods = new JButton("View All Foods");
-        JButton btnExit = new JButton("Exit");
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout(10, 10));
 
-        panel.add(btnViewProfiles);
-        panel.add(btnViewStores);
-        panel.add(btnViewFoods);
-        panel.add(btnExit);
-        frame.add(panel);
-        frame.setVisible(true);
+    // Top title label
+    JLabel lblTitle = new JLabel("Admin Panel", SwingConstants.CENTER);
+    lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+    panel.add(lblTitle, BorderLayout.NORTH);
 
-        btnViewProfiles.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("Registered Users:\n\n");
-            for (ProfileBean p : ProfileData.getProfiles()) {
-                sb.append(p.getUserID()).append(" - ")
-                  .append(p.getFirstName()).append(" ").append(p.getLastName())
-                  .append(" (").append(p.getEmailID()).append(")\n");
-            }
-            JOptionPane.showMessageDialog(frame, sb.toString());
-        });
+    // Center text area for results
+    JTextArea resultArea = new JTextArea(10, 40);
+    resultArea.setEditable(false);
+    JScrollPane scrollPane = new JScrollPane(resultArea);
+    panel.add(scrollPane, BorderLayout.CENTER);
 
-        btnViewStores.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("Available Stores:\n\n");
-            for (StoreBean s : StoreData.getStores()) {
-                sb.append(s.getStoreID()).append(" - ").append(s.getName())
-                  .append(", ").append(s.getCity()).append(", ").append(s.getState())
-                  .append(" | Phone: ").append(s.getMobileNo()).append("\n");
-            }
-            JOptionPane.showMessageDialog(frame, sb.toString());
-        });
+    // Bottom command input section
+    JPanel inputPanel = new JPanel(new FlowLayout());
+    JLabel lblCommand = new JLabel("Enter Admin Code:");
+    JTextField txtCommand = new JTextField(10);
+    JButton btnRun = new JButton("Run");
+    JButton btnHelp = new JButton("Help");
+    JButton btnExit = new JButton("Exit");
 
-        btnViewFoods.addActionListener(e -> {
-            StringBuilder sb = new StringBuilder("Available Foods:\n\n");
-            for (FoodBean f : FoodData.getFoods()) {
-                sb.append(f.getFoodID()).append(" - ").append(f.getName())
-                  .append(" (").append(f.getType()).append(", ").append(f.getFoodSize()).append(") ₹")
-                  .append(f.getPrice()).append(" [Store: ").append(f.getStoreID()).append("]\n");
-            }
-            JOptionPane.showMessageDialog(frame, sb.toString());
-        });
+    inputPanel.add(lblCommand);
+    inputPanel.add(txtCommand);
+    inputPanel.add(btnRun);
+    inputPanel.add(btnHelp);
+    inputPanel.add(btnExit);
 
-        btnExit.addActionListener(e -> System.exit(0));
-    }
+    panel.add(inputPanel, BorderLayout.SOUTH);
+    frame.add(panel);
+    frame.setVisible(true);
+
+    // --- Action when clicking Run ---
+    btnRun.addActionListener(e -> {
+        String code = txtCommand.getText().trim().toUpperCase();
+        resultArea.setText(""); // clear previous output
+
+        switch (code) {
+            case "AD-001":
+                resultArea.append("🔹 Showing All Registered Users:\n\n");
+                for (ProfileBean p : ProfileData.getProfiles()) {
+                    resultArea.append(p.getUserID() + " - " + p.getFirstName() + " " + p.getLastName()
+                            + " (" + p.getEmailID() + ")\n");
+                }
+                break;
+
+            case "AD-002":
+                resultArea.append("🏬 Showing All Stores:\n\n");
+                for (StoreBean s : StoreData.getStores()) {
+                    resultArea.append(s.getStoreID() + " - " + s.getName()
+                            + ", " + s.getCity() + ", " + s.getState()
+                            + " | Phone: " + s.getMobileNo() + "\n");
+                }
+                break;
+
+            case "AD-003":
+                resultArea.append("🍕 Showing All Food Items:\n\n");
+                for (FoodBean f : FoodData.getFoods()) {
+                    resultArea.append(f.getFoodID() + " - " + f.getName()
+                            + " (" + f.getType() + ", " + f.getFoodSize() + ") ₹"
+                            + f.getPrice() + " [Store: " + f.getStoreID() + "]\n");
+                }
+                break;
+
+            case "AD-004":
+                String storeName = JOptionPane.showInputDialog(frame, "Enter new store name:");
+                if (storeName != null && !storeName.trim().isEmpty()) {
+                    String newID = "S" + String.format("%03d", StoreData.getStores().size() + 1);
+                    StoreBean newStore = new StoreBean(newID, storeName, "New Street", "9999999999", "City", "State", "560000");
+                    StoreData.getStores().add(newStore);
+                    resultArea.append("✅ New store added successfully!\n");
+                    resultArea.append(newStore.toString());
+                } else {
+                    resultArea.append("❌ Store creation cancelled.\n");
+                }
+                break;
+
+            case "AD-005":
+                String foodName = JOptionPane.showInputDialog(frame, "Enter new food name:");
+                if (foodName != null && !foodName.trim().isEmpty()) {
+                    String newFID = "F" + String.format("%03d", FoodData.getFoods().size() + 1);
+                    FoodBean newFood = new FoodBean(newFID, foodName, "Veg", "Medium", 10, 299.0, "S001");
+                    FoodData.getFoods().add(newFood);
+                    resultArea.append("✅ New food item added successfully!\n");
+                    resultArea.append(newFood.toString());
+                } else {
+                    resultArea.append("❌ Food creation cancelled.\n");
+                }
+                break;
+
+            default:
+                resultArea.append("❌ Invalid admin code. Type 'Help' for available commands.\n");
+        }
+
+        txtCommand.setText("");
+    });
+
+    // --- Help button ---
+    btnHelp.addActionListener(e -> {
+        resultArea.setText("""
+        📘 Admin Command Reference:
+        AD-001 → View All Users
+        AD-002 → View All Stores
+        AD-003 → View All Food Items
+        AD-004 → Add New Store
+        AD-005 → Add New Food Item
+        """);
+    });
+
+    // --- Exit button ---
+    btnExit.addActionListener(e -> System.exit(0));
+}
 
     // --- User UI ---
     private static void showUserUI(ProfileBean user) {
