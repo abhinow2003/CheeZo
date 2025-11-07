@@ -12,7 +12,7 @@ public class UserDaoImplements implements UserDao {
 
     @Override
     public String register(ProfileBean profile, CredentialBean creds) {
-        String userId = IdGenerator.nextUserId(profile.getFirstName());
+        String userId = IdGenerator.nextUserId();
         profile.setUserID(userId);
         creds.setUserID(userId);
         InMemoryDataStore.PROFILE_LIST.add(profile);

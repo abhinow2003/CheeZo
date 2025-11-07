@@ -10,7 +10,7 @@ public class FoodDaoImplements implements FoodDao {
 
     @Override
     public String create(FoodBean food) {
-        String id = IdGenerator.nextFoodId(food.getName());
+        String id = IdGenerator.nextFoodId();
         food.setFoodID(id);
         InMemoryDataStore.FOOD_LIST.add(food);
         return id;

@@ -1,36 +1,26 @@
 package com.ust.pos.util;
 
-
 public class IdGenerator {
 
-    private static int userCounter = 1000;
-    private static int storeCounter = 1000;
-    private static int foodCounter = 1000;
+    private static int userCounter = 1005;
+    private static int storeCounter = 1005;
+    private static int foodCounter = 1030;
     private static int orderCounter = 1000;
     private static int cartCounter = 1000;
 
-    public static String nextUserId(String firstName) {
+    public static String nextUserId() {
         userCounter++;
-        String prefix = (firstName != null && firstName.length() >= 2)
-                ? firstName.substring(0, 2).toUpperCase()
-                : "US";
-        return prefix + userCounter;
+        return "US" + userCounter;
     }
 
-    public static String nextStoreId(String storeName) {
+    public static String nextStoreId() {
         storeCounter++;
-        String prefix = (storeName != null && storeName.length() >= 2)
-                ? storeName.substring(0, 2).toUpperCase()
-                : "ST";
-        return prefix + storeCounter;
+        return "ST" + storeCounter;
     }
 
-    public static String nextFoodId(String foodName) {
+    public static String nextFoodId() {
         foodCounter++;
-        String prefix = (foodName != null && foodName.length() >= 2)
-                ? foodName.substring(0, 2).toUpperCase()
-                : "FD";
-        return prefix + foodCounter;
+        return "FD" + foodCounter;
     }
 
     public static String nextOrderId() {
@@ -43,4 +33,3 @@ public class IdGenerator {
         return "CT" + cartCounter;
     }
 }
-

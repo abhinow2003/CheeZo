@@ -11,7 +11,7 @@ public class StoreDaoImplements implements StoreDao {
 
     @Override
     public String create(StoreBean store) {
-        String id = IdGenerator.nextStoreId(store.getName());
+        String id = IdGenerator.nextStoreId();
         store.setStoreID(id);
         InMemoryDataStore.STORE_LIST.add(store);
         return id;

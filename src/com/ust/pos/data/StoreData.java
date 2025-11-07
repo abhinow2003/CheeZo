@@ -9,7 +9,7 @@ public class StoreData {
         List<StoreBean> stores = new ArrayList<>();
 
         stores.add(new StoreBean(
-                "S001",
+                "ST1001",
                 "FreshMart",
                 "12 MG Road",
                 "9876500010",
@@ -19,7 +19,7 @@ public class StoreData {
         ));
 
         stores.add(new StoreBean(
-                "S002",
+                "ST1002",
                 "Daily Needs",
                 "45 Church Street",
                 "9876500011",
@@ -29,7 +29,7 @@ public class StoreData {
         ));
 
         stores.add(new StoreBean(
-                "S003",
+                "ST1003",
                 "QuickShop",
                 "77 Park Avenue",
                 "9876500012",
@@ -39,7 +39,7 @@ public class StoreData {
         ));
 
         stores.add(new StoreBean(
-                "S004",
+                "ST1004",
                 "Urban Store",
                 "22 MG Road",
                 "9876500013",
@@ -49,7 +49,7 @@ public class StoreData {
         ));
 
         stores.add(new StoreBean(
-                "S005",
+                "ST1005",
                 "CityMart",
                 "88 Marine Drive",
                 "9876500014",

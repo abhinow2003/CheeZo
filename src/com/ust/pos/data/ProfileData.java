@@ -9,7 +9,7 @@ public class ProfileData {
     public static List<ProfileBean> getProfiles() {
         List<ProfileBean> profiles = new ArrayList<>();
         profiles.add(new ProfileBean(
-                "U001",
+                "US1001",
                 "Abhinav",
                 "Rajesh",
                 Date.valueOf("2002-05-15"),
@@ -25,7 +25,7 @@ public class ProfileData {
         ));
 
         profiles.add(new ProfileBean(
-                "U002",
+                "US1002",
                 "Anjali",
                 "Menon",
                 Date.valueOf("2001-08-20"),
@@ -37,11 +37,11 @@ public class ProfileData {
                 "682001",
                 "9876543211",
                 "anjali@example.com",
-                "password456"
+                "pass123"
         ));
 
         profiles.add(new ProfileBean(
-                "U003",
+                "US1003",
                 "Rahul",
                 "Sharma",
                 Date.valueOf("1999-12-10"),
@@ -53,11 +53,11 @@ public class ProfileData {
                 "400001",
                 "9876543212",
                 "rahul@example.com",
-                "rahul789"
+                "pass123"
         ));
 
         profiles.add(new ProfileBean(
-                "U004",
+                "US1004",
                 "Sneha",
                 "Iyer",
                 Date.valueOf("2000-03-05"),
@@ -69,11 +69,11 @@ public class ProfileData {
                 "600001",
                 "9876543213",
                 "sneha@example.com",
-                "sneha321"
+                "pass123"
         ));
 
         profiles.add(new ProfileBean(
-                "U005",
+                "US1005",
                 "Vikram",
                 "Das",
                 Date.valueOf("1998-11-25"),
@@ -85,7 +85,7 @@ public class ProfileData {
                 "700001",
                 "9876543214",
                 "vikram@example.com",
-                "vikram987"
+                "pass123"
         ));
 
         return profiles;

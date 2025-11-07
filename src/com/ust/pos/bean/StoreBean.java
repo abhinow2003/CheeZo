@@ -20,7 +20,7 @@ public class StoreBean {
         this.pincode = pincode;
     }
     public StoreBean() {
-        //TODO Auto-generated constructor stub
+        
     }
     public String getStoreID() {
         return storeID;

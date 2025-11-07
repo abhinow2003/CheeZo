@@ -1,7 +1,7 @@
 package com.ust.pos.ui;
 
-public class Art {
-    public static void main(String[] args) {
+public  class Art {
+    public static void Draw() {
 
          String art2 = """
               ______   __                            ________   ______  
