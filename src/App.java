@@ -3,13 +3,10 @@ import com.ust.pos.bean.StoreBean;
 import com.ust.pos.dao.data.StoreDaoImplements;
 import com.ust.pos.bean.FoodBean;
 import com.ust.pos.data.ProfileData;
-import com.ust.pos.data.StoreData;
 import com.ust.pos.ui.AddFoodUI;
 import com.ust.pos.ui.AddStoreUI;
 import com.ust.pos.ui.Art;
 import com.ust.pos.util.InMemoryDataStore;
-import com.ust.pos.data.FoodData;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -18,9 +15,6 @@ public class App {
 
     public static void main(String[] args) {
         Art.Draw();
-        InMemoryDataStore.PROFILE_LIST = ProfileData.getProfiles();
-        InMemoryDataStore.STORE_LIST = StoreData.getStores();
-        InMemoryDataStore.FOOD_LIST = FoodData.getFoods();
         SwingUtilities.invokeLater(App::showLoginUI);
     }
 
@@ -158,8 +152,8 @@ public class App {
                 case "AD-004":
                     StoreBean newStore = AddStoreUI.showDialog(frame);
                     if (newStore != null) {
-                        InMemoryDataStore.STORE_LIST.add(newStore);
-
+                        StoreDaoImplements sdi =new StoreDaoImplements();
+                        sdi.create(newStore);
                         resultArea.append("✅ New store added successfully!\n");
                         resultArea.append("---------------------------------\n");
                         resultArea.append("Store ID : " + newStore.getStoreID() + "\n");

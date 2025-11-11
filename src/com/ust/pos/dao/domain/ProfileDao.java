@@ -4,7 +4,7 @@ import com.ust.pos.bean.CredentialBean;
 import com.ust.pos.bean.ProfileBean;
 import java.util.List;
 
-public interface UserDao {
+public interface ProfileDao {
     String register(ProfileBean profile, CredentialBean creds);
     ProfileBean findProfileById(String userId);
     CredentialBean findCredentialsById(String userId);

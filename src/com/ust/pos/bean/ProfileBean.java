@@ -17,8 +17,11 @@ public class ProfileBean {
     private String mobileNo;
     private String emailID;
     private String password;
+    
 
     
+    public ProfileBean() {
+    }
     public ProfileBean(String userID, String firstName, String lastName, Date dateOfBirth, String gender, String street,
             String location, String city, String state, String pincode, String mobileNo, String emailID,
             String password) {

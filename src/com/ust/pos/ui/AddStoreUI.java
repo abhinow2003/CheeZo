@@ -9,9 +9,8 @@ public class AddStoreUI extends JDialog {
 
     private JTextField txtStoreID, txtName, txtStreet, txtMobile, txtCity, txtState, txtPincode;
     private JButton btnSave, btnCancel;
-    private StoreBean storeBean; // This will hold the result
+    private StoreBean storeBean; 
 
-    // ✅ Constructor — builds the UI dialog
     public AddStoreUI(JFrame parent) {
         super(parent, "Add New Store", true);
         setSize(400, 400);
@@ -52,15 +51,13 @@ public class AddStoreUI extends JDialog {
 
         add(btnSave);
         add(btnCancel);
-
-        // ✅ Save button action
         btnSave.addActionListener((ActionEvent e) -> {
             if (txtName.getText().isEmpty() || txtMobile.getText().isEmpty() || txtCity.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Create the StoreBean object
+            
             storeBean = new StoreBean(
                     txtStoreID.getText(),
                     txtName.getText(),
@@ -71,23 +68,22 @@ public class AddStoreUI extends JDialog {
                     txtPincode.getText()
             );
 
-            dispose(); // Close dialog after saving
+            dispose();
         });
 
-        // ✅ Cancel button
+        
         btnCancel.addActionListener(e -> {
             storeBean = null;
             dispose();
         });
     }
 
-    // ✅ Getter to access the storeBean after dialog closes
     public StoreBean getStoreBean() {
         return storeBean;
     }
     public static StoreBean showDialog(JFrame parent) {
         AddStoreUI dialog = new AddStoreUI(parent);
-        dialog.setVisible(true); // Blocks until user closes dialog
+        dialog.setVisible(true); 
         return dialog.getStoreBean();
     }
 
