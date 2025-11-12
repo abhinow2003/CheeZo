@@ -10,6 +10,8 @@ public interface ProfileDao {
     CredentialBean findCredentialsById(String userId);
     boolean updateProfile(ProfileBean profile);
     boolean updateCredentials(CredentialBean creds);
+    ProfileBean authenticate(String email, String password);
+
     List<ProfileBean> findAllProfiles();
 }
 

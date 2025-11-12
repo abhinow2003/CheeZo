@@ -180,6 +180,41 @@ public class ProfileDaoImplements implements ProfileDao {
         }
         return updated;
     }
+    @Override
+public ProfileBean authenticate(String email, String password) {
+    ProfileBean profile = null;
+    String query = "SELECT * FROM Profile WHERE emailID = ? AND password = ?";
+
+    try (Connection con = DBConnection.getConnection();
+         PreparedStatement ps = con.prepareStatement(query)) {
+
+        ps.setString(1, email);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            profile = new ProfileBean();
+            profile.setUserID(rs.getString("userID"));
+            profile.setFirstName(rs.getString("firstName"));
+            profile.setLastName(rs.getString("lastName"));
+            profile.setDateOfBirth(rs.getDate("dateOfBirth"));
+            profile.setGender(rs.getString("gender"));
+            profile.setStreet(rs.getString("street"));
+            profile.setLocation(rs.getString("location"));
+            profile.setCity(rs.getString("city"));
+            profile.setState(rs.getString("state"));
+            profile.setPincode(rs.getString("pincode"));
+            profile.setMobileNo(rs.getString("mobileNo"));
+            profile.setEmailID(rs.getString("emailID"));
+            profile.setPassword(rs.getString("password"));
+        }
+
+    } catch (SQLException e) {
+        System.out.println("❌ Error during authentication: " + e.getMessage());
+    }
+
+    return profile;
+}
 
     @Override
     public List<ProfileBean> findAllProfiles() {
