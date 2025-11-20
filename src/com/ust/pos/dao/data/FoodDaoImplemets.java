@@ -11,12 +11,11 @@ public class FoodDaoImplemets implements FoodDao{
 
     public int create(FoodBean food) {
         int rows = 0;
+        String newFoodID = IdGenerator.nextFoodId();
         String query = "INSERT INTO Food (foodID, name, type, foodSize, quantity, price, storeID) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
-
-            String newFoodID = IdGenerator.nextFoodId();
             ps.setString(1, newFoodID);
             ps.setString(2, food.getName());
             ps.setString(3, food.getType());

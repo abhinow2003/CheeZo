@@ -27,9 +27,7 @@ public class ProfileDaoImplements implements ProfileDao {
             con.setAutoCommit(false); 
 
             try (PreparedStatement psProfile = con.prepareStatement(profileQuery);
-                 PreparedStatement psCreds = con.prepareStatement(credsQuery)) {
-
-                
+                 PreparedStatement psCreds = con.prepareStatement(credsQuery)) {                
                 psProfile.setString(1, profile.getUserID());
                 psProfile.setString(2, profile.getFirstName());
                 psProfile.setString(3, profile.getLastName());
