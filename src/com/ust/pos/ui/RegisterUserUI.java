@@ -18,26 +18,30 @@ public class RegisterUserUI extends JFrame {
     private JComboBox<String> cmbGender;
     private JButton btnRegister, btnBack;
 
+    // THEME COLORS
+    private final Color ORANGE = new Color(255, 120, 0);
+    private final Color LIGHT_FIELD = new Color(250, 250, 250);
+
     public RegisterUserUI() {
-        setTitle("User Registration");
+        setTitle("Cheezo Registration");
         setSize(600, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         JPanel contentPanel = new JPanel(new BorderLayout());
-        contentPanel.setBackground(new Color(45, 45, 48));
+        contentPanel.setBackground(Color.WHITE);
 
-        JLabel titleLabel = new JLabel("Create Your Account", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Create Your Cheezo Account", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
-        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setForeground(ORANGE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         contentPanel.add(titleLabel, BorderLayout.NORTH);
 
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(new Color(45, 45, 48));
+        formPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
+        gbc.insets = new Insets(10, 12, 10, 12);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         int y = 0;
@@ -46,10 +50,10 @@ public class RegisterUserUI extends JFrame {
         addField(formPanel, gbc, "Last Name:", txtLastName = new JTextField(20), y++);
         addField(formPanel, gbc, "Date of Birth (yyyy-MM-dd):", txtDOB = new JTextField(20), y++);
 
+        // Gender
         gbc.gridx = 0;
         gbc.gridy = y;
-        JLabel lblGender = createLabel("Gender:");
-        formPanel.add(lblGender, gbc);
+        formPanel.add(createLabel("Gender:"), gbc);
 
         gbc.gridx = 1;
         cmbGender = new JComboBox<>(new String[]{"Male", "Female", "Other"});
@@ -66,14 +70,16 @@ public class RegisterUserUI extends JFrame {
         addField(formPanel, gbc, "Email ID:", txtEmail = new JTextField(20), y++);
         addField(formPanel, gbc, "Password:", txtPassword = new JPasswordField(20), y++);
 
+        // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(new Color(45, 45, 48));
+        buttonPanel.setBackground(Color.WHITE);
 
         btnRegister = new JButton("Register");
         btnBack = new JButton("Back to Login");
 
-        styleButton(btnRegister, new Color(0, 120, 215));
-        styleButton(btnBack, new Color(80, 80, 80));
+        styleButton(btnRegister, ORANGE, Color.WHITE);
+        styleButton(btnBack, Color.WHITE, ORANGE);
+        btnBack.setBorder(BorderFactory.createLineBorder(ORANGE, 2));
 
         buttonPanel.add(btnRegister);
         buttonPanel.add(btnBack);
@@ -85,11 +91,12 @@ public class RegisterUserUI extends JFrame {
 
         JScrollPane scrollPane = new JScrollPane(formPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.getViewport().setBackground(new Color(45, 45, 48));
+        scrollPane.getViewport().setBackground(Color.WHITE);
 
         contentPanel.add(scrollPane, BorderLayout.CENTER);
         add(contentPanel);
 
+        // ACTIONS
         btnRegister.addActionListener(this::handleRegister);
 
         btnBack.addActionListener(e -> {
@@ -118,11 +125,11 @@ public class RegisterUserUI extends JFrame {
 
             if (firstName.isEmpty() || emailID.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
-                        "⚠ Please fill required fields!", "Error", JOptionPane.ERROR_MESSAGE);
+                        "⚠ Please fill all required fields.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // ---- ProfileBean ----
             ProfileBean profile = new ProfileBean();
             profile.setFirstName(firstName);
             profile.setLastName(lastName);
@@ -137,18 +144,17 @@ public class RegisterUserUI extends JFrame {
             profile.setEmailID(emailID);
             profile.setPassword(password);
 
-            // ---- CredentialBean ----
             CredentialBean creds = new CredentialBean();
             creds.setPassword(password);
             creds.setUserType("user");
             creds.setLoginStatus(0);
             creds.setEmail(emailID);
 
-            // ---- Database Save ----
             ProfileDaoImplements dao = new ProfileDaoImplements();
             String generatedUserID = dao.register(profile, creds);
+
             JOptionPane.showMessageDialog(this,
-                    "✅ Registration Successful!\nYour User ID: " + generatedUserID );
+                    "✅ Registration Successful!\nYour User ID: " + generatedUserID);
 
             dispose();
             new LoginPage(null).setVisible(true);
@@ -174,28 +180,36 @@ public class RegisterUserUI extends JFrame {
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Arial", Font.PLAIN, 16));
-        label.setForeground(Color.WHITE);
+        label.setForeground(new Color(80, 80, 80));
         return label;
     }
 
     private void styleField(JComponent field) {
-        field.setFont(new Font("Arial", Font.PLAIN, 15));
-        field.setBackground(new Color(60, 60, 60));
-        field.setForeground(Color.WHITE);
-        if (field instanceof JTextField || field instanceof JPasswordField) {
-            ((JTextField) field).setCaretColor(Color.WHITE);
-            ((JTextField) field).setBorder(BorderFactory.createEmptyBorder(5, 8, 5, 8));
-        }
-    }
+    field.setFont(new Font("Arial", Font.PLAIN, 15));
+    field.setBackground(Color.WHITE);
+    field.setForeground(Color.BLACK);
 
-    private void styleButton(JButton button, Color bgColor) {
-        button.setFont(new Font("Arial", Font.BOLD, 15));
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
+    // 🔥 ORANGE BORDER
+    field.setBorder(BorderFactory.createLineBorder(new Color(255, 120, 0), 2));
+
+    if (field instanceof JTextField || field instanceof JPasswordField) {
+        ((JTextField) field).setCaretColor(Color.BLACK);
+        ((JTextField) field).setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(255, 120, 0), 2),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
+    }
+}
+
+
+    private void styleButton(JButton button, Color bg, Color fg) {
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setBackground(bg);
+        button.setForeground(fg);
+        button.setPreferredSize(new Dimension(180, 45));
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(160, 40));
-        button.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createEmptyBorder());
     }
 
     public static void main(String[] args) {
