@@ -3,6 +3,9 @@ package com.ust.pos.ui;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import com.ust.pos.dao.data.OrderDaoImplements;
+import com.ust.pos.bean.OrderBean;
+
 
 import com.ust.pos.bean.FoodBean;
 import com.ust.pos.bean.ProfileBean;
@@ -10,6 +13,7 @@ import com.ust.pos.bean.StoreBean;
 import com.ust.pos.dao.data.FoodDaoImplemets;
 import com.ust.pos.dao.data.ProfileDaoImplements;
 import com.ust.pos.dao.data.StoreDaoImplements;
+import com.ust.pos.ui.component.AdminOrderCardPanel;
 
 public class AdminPanel extends JFrame {
 
@@ -19,6 +23,10 @@ public class AdminPanel extends JFrame {
 
     private JTextArea foodResultArea = new JTextArea();
     private FoodDaoImplemets foodDao = new FoodDaoImplemets();
+
+    private OrderDaoImplements orderDao = new OrderDaoImplements();
+    private JTextArea orderResultArea = new JTextArea();
+
     
 
 
@@ -38,7 +46,8 @@ public class AdminPanel extends JFrame {
         tabs.addTab("Users", createUserPanel());
         tabs.addTab("Stores", createStorePanel());
         tabs.addTab("Foods", createFoodPanel());
-        tabs.addTab("Orders", new JPanel());
+        tabs.addTab("Orders", createOrderPanel());
+
 
         add(tabs);
         setVisible(true);
@@ -404,6 +413,73 @@ String formatFood(FoodBean f) {
 public void showFoodResult(String text) {
     foodResultArea.setText(text);
 }
+
+private JPanel createOrderPanel() {
+
+    JPanel main = new JPanel(new BorderLayout());
+
+    JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JButton btnRefresh = new JButton("Refresh Orders");
+    topBar.add(btnRefresh);
+    main.add(topBar, BorderLayout.NORTH);
+
+    JPanel cardList = new JPanel();
+    cardList.setLayout(new BoxLayout(cardList, BoxLayout.Y_AXIS));
+    cardList.setBackground(new Color(245, 245, 245));
+
+    JScrollPane scroll = new JScrollPane(cardList);
+    scroll.getVerticalScrollBar().setUnitIncrement(16);
+    scroll.setBorder(null);
+    main.add(scroll, BorderLayout.CENTER);
+
+    // ================================
+    // FIX: Declare Runnable first
+    // ================================
+    final Runnable[] loadOrders = new Runnable[1];
+
+    // ================================
+    // Now initialize it
+    // ================================
+    loadOrders[0] = () -> {
+        List<OrderBean> orders = orderDao.findAll();
+
+// Sort by newest first
+orders.sort((o1, o2) -> o2.getOrderID().compareTo(o1.getOrderID()));
+
+
+
+
+        cardList.removeAll();
+
+        if (orders.isEmpty()) {
+            JLabel lbl = new JLabel("No orders found.", SwingConstants.CENTER);
+            lbl.setFont(new Font("Arial", Font.PLAIN, 16));
+            cardList.add(lbl);
+        } else {
+            for (OrderBean o : orders) {
+                AdminOrderCardPanel card = new AdminOrderCardPanel(o, loadOrders[0]);
+                card.setAlignmentX(Component.CENTER_ALIGNMENT);
+                cardList.add(card);
+                cardList.add(Box.createVerticalStrut(15));
+            }
+        }
+
+        cardList.revalidate();
+        cardList.repaint();
+    };
+
+    // Refresh button
+    btnRefresh.addActionListener(e -> loadOrders[0].run());
+
+    // First load
+    loadOrders[0].run();
+
+    return main;
+}
+
+
+
+
 
 
 

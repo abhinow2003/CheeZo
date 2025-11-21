@@ -4,12 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.Date;
+
+import com.ust.pos.bean.CredentialBean;
 import com.ust.pos.bean.ProfileBean;
-import com.ust.pos.data.ProfileData;
+import com.ust.pos.dao.data.CredentialDaoImplements;
+import com.ust.pos.dao.data.ProfileDaoImplements;
 
 public class RegisterUserUI extends JFrame {
 
-    private JTextField txtUserId, txtFirstName, txtLastName, txtDOB, txtStreet, txtLocation, txtCity,
+    private JTextField txtFirstName, txtLastName, txtDOB, txtStreet, txtLocation, txtCity,
             txtState, txtPincode, txtMobile, txtEmail;
     private JPasswordField txtPassword;
     private JComboBox<String> cmbGender;
@@ -22,18 +25,15 @@ public class RegisterUserUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Background panel
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(new Color(45, 45, 48));
 
-        // Title
         JLabel titleLabel = new JLabel("Create Your Account", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         contentPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Form panel
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(45, 45, 48));
         GridBagConstraints gbc = new GridBagConstraints();
@@ -41,12 +41,6 @@ public class RegisterUserUI extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         int y = 0;
-
-        // Helper to add labels and fields
-        gbc.gridx = 0;
-        gbc.gridy = y;
-        gbc.anchor = GridBagConstraints.EAST;
-        addField(formPanel, gbc, "User ID:", txtUserId = new JTextField(20), y++);
 
         addField(formPanel, gbc, "First Name:", txtFirstName = new JTextField(20), y++);
         addField(formPanel, gbc, "Last Name:", txtLastName = new JTextField(20), y++);
@@ -56,6 +50,7 @@ public class RegisterUserUI extends JFrame {
         gbc.gridy = y;
         JLabel lblGender = createLabel("Gender:");
         formPanel.add(lblGender, gbc);
+
         gbc.gridx = 1;
         cmbGender = new JComboBox<>(new String[]{"Male", "Female", "Other"});
         styleField(cmbGender);
@@ -71,7 +66,6 @@ public class RegisterUserUI extends JFrame {
         addField(formPanel, gbc, "Email ID:", txtEmail = new JTextField(20), y++);
         addField(formPanel, gbc, "Password:", txtPassword = new JPasswordField(20), y++);
 
-        // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setBackground(new Color(45, 45, 48));
 
@@ -96,8 +90,8 @@ public class RegisterUserUI extends JFrame {
         contentPanel.add(scrollPane, BorderLayout.CENTER);
         add(contentPanel);
 
-        // Actions
         btnRegister.addActionListener(this::handleRegister);
+
         btnBack.addActionListener(e -> {
             dispose();
             new LoginPage(null).setVisible(true);
@@ -108,7 +102,6 @@ public class RegisterUserUI extends JFrame {
 
     private void handleRegister(ActionEvent e) {
         try {
-            String userID = txtUserId.getText().trim();
             String firstName = txtFirstName.getText().trim();
             String lastName = txtLastName.getText().trim();
             String dobText = txtDOB.getText().trim();
@@ -123,23 +116,48 @@ public class RegisterUserUI extends JFrame {
             String emailID = txtEmail.getText().trim();
             String password = new String(txtPassword.getPassword());
 
-            if (userID.isEmpty() || firstName.isEmpty() || emailID.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            if (firstName.isEmpty() || emailID.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "⚠ Please fill required fields!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            ProfileBean profile = new ProfileBean(userID, firstName, lastName, sqlDate, gender,
-                    street, location, city, state, pincode, mobileNo, emailID, password);
+            // ---- ProfileBean ----
+            ProfileBean profile = new ProfileBean();
+            profile.setFirstName(firstName);
+            profile.setLastName(lastName);
+            profile.setDateOfBirth(sqlDate);
+            profile.setGender(gender);
+            profile.setStreet(street);
+            profile.setLocation(location);
+            profile.setCity(city);
+            profile.setState(state);
+            profile.setPincode(pincode);
+            profile.setMobileNo(mobileNo);
+            profile.setEmailID(emailID);
+            profile.setPassword(password);
 
-            // Example save (replace with DAO or real persistence)
-            ProfileData.getProfiles().add(profile);
+            // ---- CredentialBean ----
+            CredentialBean creds = new CredentialBean();
+            creds.setPassword(password);
+            creds.setUserType("user");
+            creds.setLoginStatus(0);
+            creds.setEmail(emailID);
 
-            JOptionPane.showMessageDialog(this, "✅ Registration Successful!\nWelcome, " + firstName + "!");
+            // ---- Database Save ----
+            ProfileDaoImplements dao = new ProfileDaoImplements();
+            String generatedUserID = dao.register(profile, creds);
+            JOptionPane.showMessageDialog(this,
+                    "✅ Registration Successful!\nYour User ID: " + generatedUserID );
+
             dispose();
             new LoginPage(null).setVisible(true);
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "❌ Error: " + ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "❌ Error: " + ex.getMessage(),
+                    "Invalid Input",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -147,6 +165,7 @@ public class RegisterUserUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = y;
         panel.add(createLabel(labelText), gbc);
+
         gbc.gridx = 1;
         styleField(field);
         panel.add(field, gbc);

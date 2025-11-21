@@ -21,7 +21,7 @@ public class ProfileDaoImplements implements ProfileDao {
         String profileQuery = "INSERT INTO Profile (userID, firstName, lastName, dateOfBirth, gender, street, location, city, state, pincode, mobileNo, emailID, password) "
                             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        String credsQuery = "INSERT INTO Credential (userID, password, userType, loginStatus) VALUES (?, ?, ?, ?)";
+        String credsQuery = "INSERT INTO Credential (userID,emailId, password, userType, loginStatus) VALUES (?,?, ?, ?, ?)";
 
         try (Connection con = DBConnection.getConnection()) {
             con.setAutoCommit(false); 
@@ -45,9 +45,10 @@ public class ProfileDaoImplements implements ProfileDao {
 
                 
                 psCreds.setString(1, creds.getUserID());
-                psCreds.setString(2, creds.getPassword());
-                psCreds.setString(3, creds.getUserType());
-                psCreds.setInt(4, creds.getLoginStatus());
+                psCreds.setString(2, creds.getEmail());
+                psCreds.setString(3, creds.getPassword());
+                psCreds.setString(4, creds.getUserType());
+                psCreds.setInt(5, creds.getLoginStatus());
                 psCreds.executeUpdate();
                 con.commit(); 
                 System.out.println("✅ User registered successfully! (User ID: " + userId + ")");

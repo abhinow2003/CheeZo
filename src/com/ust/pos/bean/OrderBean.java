@@ -7,7 +7,7 @@ public class OrderBean {
     private String userID;
     private Date orderDate;
     private String storeID;
-    private int cartID;
+    private String cartID;
     private double totalPrice;
     private String orderStatus;
     private String street;
@@ -15,6 +15,14 @@ public class OrderBean {
     private String state;
     private String pincode;
     private String mobileNo;
+    private String cardNumber;
+    public String getCardNumber() {
+        return cardNumber;
+    }
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
     public String getOrderID() {
         return orderID;
     }
@@ -39,10 +47,10 @@ public class OrderBean {
     public void setStoreID(String storeID) {
         this.storeID = storeID;
     }
-    public int getCartID() {
+    public String getCartID() {
         return cartID;
     }
-    public void setCartID(int cartID) {
+    public void setCartID(String cartID) {
         this.cartID = cartID;
     }
     public double getTotalPrice() {

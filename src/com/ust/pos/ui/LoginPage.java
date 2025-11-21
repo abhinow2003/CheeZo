@@ -1,8 +1,7 @@
 package com.ust.pos.ui;
 
-import com.ust.pos.bean.ProfileBean;
-import com.ust.pos.dao.data.ProfileDaoImplements;
-
+import com.ust.pos.bean.CredentialBean;
+import com.ust.pos.dao.data.CredentialDaoImplements;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +10,7 @@ import java.awt.event.ActionListener;
 public class LoginPage extends JFrame {
 
     public interface LoginListener {
-        void onLoginSuccess(ProfileBean user);
+        void onLoginSuccess(CredentialBean cred);
     }
 
     private LoginListener listener;
@@ -27,6 +26,18 @@ public class LoginPage extends JFrame {
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(new Color(45, 45, 48));
+
+
+
+        JLabel logo = new JLabel();
+        logo.setHorizontalAlignment(SwingConstants.CENTER);
+
+        ImageIcon icon = new ImageIcon("images/cheezo.png");  // ← update your file name
+        Image img = icon.getImage().getScaledInstance(280, 280, Image.SCALE_SMOOTH);
+        logo.setIcon(new ImageIcon(img));
+
+        
+
 
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(45, 45, 48));
@@ -110,12 +121,12 @@ public class LoginPage extends JFrame {
                     return;
                 }
 
-                ProfileBean user = authenticate(email, password);
+                CredentialBean cred = authenticate(email, password);
 
-                if (user != null) {
-                    JOptionPane.showMessageDialog(LoginPage.this, "✅ Login Successful! Welcome, " + user.getFirstName());
+                if ( cred!= null) {
+                    JOptionPane.showMessageDialog(LoginPage.this, "✅ Login Successful! Welcome, " + cred.getEmail());
                     dispose();
-                    if (listener != null) listener.onLoginSuccess(user);
+                    if (listener != null) listener.onLoginSuccess(cred);
                 } else {
                     JOptionPane.showMessageDialog(LoginPage.this, "❌ Invalid credentials.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -124,15 +135,15 @@ public class LoginPage extends JFrame {
     }
 
     // ---------------- AUTHENTICATION USING DAO ----------------
-    private ProfileBean authenticate(String email, String password) {
-        ProfileDaoImplements dao = new ProfileDaoImplements();
-        return dao.authenticate(email, password);
+    private CredentialBean authenticate(String email, String password) {
+        CredentialDaoImplements credentialDao = new CredentialDaoImplements();
+        return credentialDao.authenticate(email, password);
     }
 
     // ---------------- MAIN ----------------
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new LoginPage(user -> {
-            System.out.println("Logged in as: " + user.getFirstName());
+            System.out.println("Logged in as: " + user.getUserID());
         }).setVisible(true));
     }
 }
